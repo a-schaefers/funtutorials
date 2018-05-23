@@ -63,22 +63,39 @@ iptables -S
 
 `...
 -A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
 -A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+
 -A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+
 -A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
 -A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+
 -A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+
 -A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
 -A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+
 -A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+
 -A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT`
 
 ## Most virsh commands require root privileges
