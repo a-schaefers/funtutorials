@@ -151,7 +151,7 @@ Emerge -av virt-manager
 ~~~~
 ##### Once again it is likely to need further USE flag changes to /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
 
-
+#### At this point Virtual Machine Creation and administration should be relatively intuitive using the Virt-Manager GUI tool. What follows will be screenshots and guidelines for creating a Windows 10 Virtual Machine using Virt-Manager and the additional spice guest drivers:
 
 
 ~~~~
