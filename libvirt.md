@@ -17,19 +17,16 @@ LC_ALL=C lscpu | grep Virtualization
 ## Kernel configuration
 #### The default Funtoo kernel, "debian-sources", has the needed KVM virtualization and virtual networking features enabled by default and will not require any reconfiguration. Non debian-sources users will need to verify the necessary kernel features are turned on in order to run KVM virtual machines and use virtual networking. (*a link to the funtoo KVM page should go here, but the funtoo KVM page is outdated currently Wed May 23 12:09:53 PDT 2018, see https://www.funtoo.org/Talk:KVM*)
 
-## Install libvirt
-
-emerge -av libvirt
-
-#### At this point it will likely ask to make some USE flag changes to the file /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged. See what follows for extra USE flag tips for libvirt and related packages:
-
-#### For non-root, passwordless VM administration, build libvirt with policykit support:
+## Installing libvirt
+#### Optionally build libvirt with policykit support which will allow non-root users to authenticate as root in order to manage VM's and will also allow members of the libvirt group to manage VM's without using the root password.
 echo 'app-emulation/libvirt policykit' >> /etc/portage/package.use
 
-#### For desktop VM usage, It is recommended to build app-emulation/qemu with spice support for improved graphical and audio performance, clipboard-sharing and directory-sharing. (Note: you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
+#### For desktop VM usage, It is recommended to build app-emulation/qemu with spice support, (Qemu will be pulled-in by emerging libvirt), for improved graphical and audio performance, clipboard-sharing and directory-sharing.
 echo 'app-emulation/qemu spice' >> /etc/portage/package.use
 
-#### After libvirt is finished compiling, you will have installed libvirt and pulled-in all of its' necessary dependencies, such as app-emulation/qemu and also net-firewall/ebtables and net-dns/dnsmasq for the default NAT/DHCP networking.
+#### It will likely ask to make some USE flag changes to the file /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
+emerge -av libvirt
+##### After libvirt is finished compiling, you will have installed libvirt and pulled-in all of its' necessary dependencies, such as app-emulation/qemu and also net-firewall/ebtables and net-dns/dnsmasq for the default NAT/DHCP networking.
 
 ## Enabling the libvirtd service
 
@@ -39,14 +36,13 @@ rc-service libvirtd start
 #### Add the libvirtd service to the openrc default runlevel:
 rc-update add libvirtd
 
-
 ## Enabling the "default" libvirt NAT
 
 #### Set the virsh net "default" (the default libvirt NAT) to be autostarted by libvirtd	
 virsh net-autostart default
 #### Start the "default" virsh network
 virsh net-start default
-#### For good measure, restart the libvirtd service to ensure everything has taken effect.
+#### Restart the libvirtd service to ensure everything has taken effect.
 rc-service libvirtd restart
 
 #### You can verify the default NAT is up is up using ifconfig:
@@ -85,21 +81,21 @@ iptables -S
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
 
-## Some virsh command examples
+## Most virsh commands require root privileges
 
-#### It is possible to begin managing VM's using libvirt's "virsh" commands as root or with sudo. If using the graphical Virt-Manager, it will also be required to run with escalated privileges.
+#### Libvirt VM's are managed using the "virsh" cli tools and the GUI front-end "Virt-Manager". Using these tools will require root privileges unless they are built with policykit support enabled.
 
 #### as noted from man virsh(1),
 ##### Most virsh commands require root privileges to run due to
 ##### the communications channels used to talk to the
 ##### hypervisor.  Running as non root will return an error.
 
-#### As root you will run virsh commands as follows:
+#### Running as root, here are some example virsh commands:
 virsh list --all  # show the status of all virtual machines
 virsh start foo   # start the virtual machine "foo"
 virsh destroy foo # shutdown virtual machine "foo"
 
-#### Non-root users can run the same commands by addressing qemu:///system and authenticating as root via policykit:
+#### If libvirt was built with polictykit support, non-root users can run the same example virsh commands by addressing qemu:///system and authenticating as root via policykit:
 virsh --connect qemu:///system list --all  # show the status of all virtual machines
 virsh --connect qemu:///system start foo   # start the virtual machine "foo"
 virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"
@@ -111,11 +107,14 @@ gpasswd -a $USER libvirt
 
 ## Using Virt-Manager to create and configure VM templates
 
-#### Libvirt VM Templates are configured using XML and it is strongly recommended to install Virt-Manager in order to ease the virtual machine creation and configuration process. It may also be desirable also to revisit the "virsh" commands later on, as it may be necessary in order to make some advanced changes to XML templates that are not shown in the GUI Virt-Manager application.
+#### Libvirt VM Templates are configured using XML and it is strongly recommended to install Virt-Manager in order to ease the virtual machine creation and configuration process. It may also be desirable to revisit the "virsh" commands later on, as it may be necessary to use them in order to make some advanced changes to XML templates that are not shown in the GUI Virt-Manager application.
 
-#### Make sure the "gtk" use flag is enabled for Virt-Mananger, as it is a graphical application, and then begin the emerge process:
+#### Make sure the "gtk" use flag is enabled for Virt-Mananger, as it is a graphical application, and also "polictykit" unless you plan to run it as root, and then begin the emerge process:
+echo 'app-emulation/virt-manager gtk policykit' >> /etc/portage/package.use
 Emerge -av virt-manager
-#### Once again it is likely to need further USE flag changes to /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
+##### Once again it is likely to need further USE flag changes to /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
+
+
 
 
 See also:
@@ -124,3 +123,6 @@ https://www.linux-kvm.org
 https://libvirt.org
 https://virt-manager.org
 https://www.spice-space.org
+
+
+(Note: you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
