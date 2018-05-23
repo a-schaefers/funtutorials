@@ -33,18 +33,26 @@ echo 'app-emulation/qemu spice' >> /etc/portage/package.use
 
 ## Enabling the libvirtd service
 
-#### Set the virsh net "default" (the default libvirt NAT) to be autostarted by libvirtd	
-virsh net-autostart default
-
 #### Start the libvirtd service:
 rc-service libvirtd start
 	
 #### Add the libvirtd service to the openrc default runlevel:
 rc-update add libvirtd
 
+
+## Enabling the "default" libvirt NAT
+
+#### Set the virsh net "default" (the default libvirt NAT) to be autostarted by libvirtd	
+virsh net-autostart default
+#### Start the "default" virsh network
+virsh net-start default
+#### For good measure, restart the libvirtd service to ensure everything has taken effect.
+rc-service libvirtd restart
+
 #### You can verify the default NAT is up is up using ifconfig:
 ifconfig
 
+...
 virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255
         ether 52:54:00:74:7a:ac  txqueuelen 1000  (Ethernet)
@@ -52,6 +60,30 @@ virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         RX errors 0  dropped 5  overruns 0  frame 0
         TX packets 0  bytes 0 (0.0 B)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+...
+
+#### You may also notice the "default" libvirt NAT inserts its' own additional iptables rules automatically upon every libvirtd restart:
+iptables -S
+
+...
+-A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+-A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+-A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+-A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+-A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
+-A FORWARD -i virbr0 -o virbr0 -j ACCEPT
+-A FORWARD -o virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
+-A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+-A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+-A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
 
 ## Some virsh command examples
 
