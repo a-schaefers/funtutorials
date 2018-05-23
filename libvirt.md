@@ -2,12 +2,12 @@
 
 ## An overview according to libvirt.org, the [libvirt] project:
 
-##### "is a toolkit to manage virtualization platforms
-##### is accessible from C, Python, Perl, Java and more
-##### is licensed under open source licenses
-##### supports KVM, QEMU, Xen, Virtuozzo, VMWare ESX, LXC, BHyve and more
-##### targets Linux, FreeBSD, Windows and OS-X
-##### is used by many applications"
+* is a toolkit to manage virtualization platforms
+* is accessible from C, Python, Perl, Java and more
+* is licensed under open source licenses
+* supports KVM, QEMU, Xen, Virtuozzo, VMWare ESX, LXC, BHyve and more
+* targets Linux, FreeBSD, Windows and OS-X
+* is used by many applications
 
 ## Check for KVM hardware support
 #### To use KVM, one will need to verify the processor supports Intel Vt-x or AMD-V technology and that the necessary virtualization features are enabled within the BIOS. The following command should reveal if your hardware has virtualization enabed:
@@ -48,7 +48,7 @@ rc-service libvirtd restart
 #### You can verify the default NAT is up is up using ifconfig:
 ifconfig
 
-...
+`...
 virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255
         ether 52:54:00:74:7a:ac  txqueuelen 1000  (Ethernet)
@@ -56,12 +56,12 @@ virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         RX errors 0  dropped 5  overruns 0  frame 0
         TX packets 0  bytes 0 (0.0 B)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-...
+...`
 
 #### You may also notice the "default" libvirt NAT inserts its' own additional iptables rules automatically upon every libvirtd restart:
 iptables -S
 
-...
+`...
 -A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
 -A FORWARD -i virbr0 -o virbr0 -j ACCEPT
@@ -79,26 +79,24 @@ iptables -S
 -A FORWARD -i virbr0 -j REJECT --reject-with icmp-port-unreachable
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
 -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
--A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+-A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT`
 
 ## Most virsh commands require root privileges
 
 #### Libvirt VM's are managed using the "virsh" cli tools and the GUI front-end "Virt-Manager". Using these tools will require root privileges unless they are built with policykit support enabled.
 
 #### as noted from man virsh(1),
-##### Most virsh commands require root privileges to run due to
-##### the communications channels used to talk to the
-##### hypervisor.  Running as non root will return an error.
+> Most virsh commands require root privileges to run due to the communications channels used to talk to the hypervisor.  Running as non root will return an error.
 
 #### Running as root, here are some example virsh commands:
-virsh list --all  # show the status of all virtual machines
+`virsh list --all  # show the status of all virtual machines
 virsh start foo   # start the virtual machine "foo"
-virsh destroy foo # shutdown virtual machine "foo"
+virsh destroy foo # shutdown virtual machine "foo"`
 
 #### If libvirt was built with polictykit support, non-root users can run the same example virsh commands by addressing qemu:///system and authenticating as root via policykit:
-virsh --connect qemu:///system list --all  # show the status of all virtual machines
+`virsh --connect qemu:///system list --all  # show the status of all virtual machines
 virsh --connect qemu:///system start foo   # start the virtual machine "foo"
-virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"
+virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"`
 
 ## Passwordless, non-root VM administration
 
