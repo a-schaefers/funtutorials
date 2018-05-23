@@ -1,6 +1,6 @@
-# This guide aims to help a Funtoo user to configure and administrate "KVM" (a hypervisor) and "Qemu" (an emulator) by using the "Libvirt" toolkit along with the GUI front-end "Virt-Manager" and finally the "Spice" protocols in order to run graphical virtual machines.
+# This guide aims to help Funtoo users configure and administrate "KVM" (a hypervisor) and "Qemu" (an emulator) by using the "Libvirt" toolkit along with the GUI front-end "Virt-Manager" and finally the "Spice" protocols in order to run graphical virtual machines.
 
-## An overview: According to libvirt.org, the [libvirt] project:
+## An overview according to libvirt.org, the [libvirt] project:
 
 ##### "is a toolkit to manage virtualization platforms
 ##### is accessible from C, Python, Perl, Java and more
@@ -67,15 +67,15 @@ virsh list --all  # show the status of all virtual machines
 virsh start foo   # start the virtual machine "foo"
 virsh destroy foo # shutdown virtual machine "foo"
 
-## Passwordless, non-root VM administration
-
-#### If libvirt was built with policykit support, you may want to add your system administrator who belongs to the "wheel" group to the additional "libvirt" group in order to administrate Virtual Machines without using a password. You will need log out and back in at this point for these changes to take affect.
-gpasswd -a $USER libvirt
-
-#### Now a regular user that belongs to the wheel and libvirt groups can run the same virsh example commands, modified as follows:
+#### Non-root users can run the same commands by addressing qemu:///system and authenticating as root via policykit:
 virsh --connect qemu:///system list --all  # show the status of all virtual machines
 virsh --connect qemu:///system start foo   # start the virtual machine "foo"
 virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"
+
+## Passwordless, non-root VM administration
+
+#### If libvirt was built with policykit support, you may want to add your user to the additional "libvirt" group in order to administrate Virtual Machines without authenticating as root. You will need log out and back in for these changes to take affect.
+gpasswd -a $USER libvirt
 
 ## Using Virt-Manager to create and configure VM templates
 
