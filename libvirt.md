@@ -203,16 +203,6 @@ mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
 10choosebios.png
 
 #### The default is to use seabios, which is a legacy bios. OVMF (a uefi bios) is also available. When deciding on a chipset, i440FX is for emulation of older BIOS chipsets, and Q35 is for emulation of newer BIOS chipsets. After you select these options and choose "begin installation", there is no going back without creating a new template from scratch
-See also:
-https://www.qemu.org
-https://www.linux-kvm.org
-https://libvirt.org
-https://virt-manager.org
-https://www.spice-space.org
-~~~~
-
-
-(Note: you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
 
 ##### It is usually wise to keep things simple and use the legacy seabios unless you have a reason to need the UEFI bios (e.g. For pci-passthrough of GPU's, or working on UEFI or secure boot applications...)
 
@@ -234,5 +224,14 @@ https://www.spice-space.org
 #### When you are ready to begin, choose "Begin Installation"
 12begininstallation.png
 
-#### After successful installation of a desktop operating system, it is important to be sure you enable the Spice guest agent, which can be installed from most Linux distro's package repos and enabled using one of the various init systems, but as mentioned previously, this is also done automatically by many Linux distros.
+#### After successful installation of a desktop operating system, you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
 
+
+~~~~
+See also:
+https://www.qemu.org
+https://www.linux-kvm.org
+https://libvirt.org
+https://virt-manager.org
+https://www.spice-space.org
+~~~~
