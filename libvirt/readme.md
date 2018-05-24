@@ -1,4 +1,7 @@
-# This guide aims to help Funtoo users configure and administrate "KVM" (a hypervisor) and "Qemu" (an emulator) by using the "Libvirt" toolkit along with the GUI front-end "Virt-Manager" and finally the "Spice" protocols in order to run graphical virtual machines.
+# This document was used while writing this Libvirt wiki page, and is left here for historical purposes, but is now obsolete. My final version of writing the article by myself is the companion file, finalVer.wikimedia, which is now donated to the Funtoo Linux project, and shall be community maintained at https://funtoo.org/Libvirt Thank you.
+
+
+##### This guide aims to help Funtoo users configure and administrate "KVM" (a hypervisor) and "Qemu" (an emulator) by using the "Libvirt" toolkit along with the GUI front-end "Virt-Manager" and finally the "Spice" protocols in order to run graphical virtual machines.
 
 ## An overview according to libvirt.org, the [libvirt] project:
 
