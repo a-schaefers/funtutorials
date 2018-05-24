@@ -213,13 +213,15 @@ mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
 
 ![10choosebios.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/10choosebios.png)
 
-#### The default is to use seabios, which is a legacy bios. OVMF (a uefi bios) is also available. When deciding on a chipset, i440FX is for emulation of older BIOS chipsets, and Q35 is for emulation of newer BIOS chipsets. After you select these options and choose "begin installation", there is no going back without creating a new template from scratch
+#### The default is to use seabios, which is a legacy bios. OVMF (a uefi bios) is also available. When deciding on a chipset, i440FX is for emulation of older BIOS chipsets, and Q35 is for emulation of newer BIOS chipsets. After you select your bios and choose "begin installation", you will not be able to change the bios without creating a new template again from the beginning. (All of the other options can be changed again later, but bios selection is permanenant for the template)
 
 ##### It is usually wise to keep things simple and use the legacy seabios unless you have a reason to need the UEFI bios (e.g. For pci-passthrough of GPU's, or working on UEFI or secure boot applications...)
 
 ### Other considerations in the customization menu:
 * Q35 BIOS will not work with IDE, remove the IDE CDROM and IDE Storage and Select "Add Hardware" and add under "Storage" select SATA and add a new SATA cdrom and SATA harddrive instead. At this time it is important for most users to decide if they want to use the "qcow2" format which allows for snapshotting with rollbacks and rollforwards and is additionally sparse provisioned to only use the space it needs, or to choose "raw" which will have none of these things, but may have better performance under some circumstances.
-11newsatacdrom.png
+
+![11newsatacdrom.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/11newsatacdrom.png)
+
 ##### Adding a new, SATA cdrom Device and loading it with a windows 10 ISO image.
 
 * Note for ZFS users: While selecting Storage drives this is an excellent time to choose the disk "Device type" of "SCSI" which will use the Redhat passthrough "Virtio Scsi" disk controller for improved I/O performance, and you can create a sparse provisioned ZVOL with "zfs create -s -V 100G tank/VOLNAME" which can be addressed in this section of the Virt-Manager Manage-box as "/dev/zvol/tank/VOLNAME". The virtio guest driver for taking advantage of the "Virtio Scsi" disk controller is included by default in Linux and FreeBSD kernels. Windows will be unable to see the Virtio Scsi storage disk and unable to install until you load the Redhat Virtio Scsi Driver during the Windows install process. (Windows installers include a menu with the ability to load drivers during the install process.) The RedHat Virtio Scsi driver for windows is available as an [ISO image](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/) 
