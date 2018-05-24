@@ -164,8 +164,20 @@ emerge -av virt-manager
 ## Using Virt-Manager
 
 ![00virt-manager.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/00virt-manager.png)
-
-### Creating a new Virtual Machine Template
+[[File:00virt-manager.png|681px|Virt-Manager]]
+[[File:01createvm.png|400px|Creating a new Virtual Machine Template]]
+[[File:02nostorage.png|681px|Creating a new Virtual Machine Template]]
+[[File:03isopoolname.png|370px|Creating a new Virtual Machine Template]]
+[[File:04isopoollocation.png|443px|Creating a new Virtual Machine Template]]
+[[File:05isopoolimage.png|750px|Creating a new Virtual Machine Template]]
+[[File:06isoloaded.png|470px|Creating a new Virtual Machine Template]]
+[[File:07memcpu.png|400px|Creating a new Virtual Machine Template]]
+[[File:08allocstore.png|400px|Creating a new Virtual Machine Template]]
+[[File:09customizebefore.png|400px|Creating a new Virtual Machine Template]]
+[[File:10choosebios.png|816px|Creating a new Virtual Machine Template]]
+[[File:11newsatacdrome.png|525px|Creating a new Virtual Machine Template]]
+[[File:11redoingstorage.png|525px|Creating a new Virtual Machine Template]]
+[[File:12begininstallation.png|681px|Creating a new Virtual Machine Template]]
 
 ![01createvm.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/01createvm.png)
 
