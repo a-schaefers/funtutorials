@@ -138,7 +138,7 @@ virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"
 gpasswd -a $USER libvirt
 ~~~~
 
-## Configure Qemu to have the option of using UEFI bios firmware
+## Tell Qemu where the UEFI bios firmware is located
 #### /etc/libvirt/qemu.conf
 ~~~~
 nvram = [
