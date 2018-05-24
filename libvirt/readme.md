@@ -223,7 +223,9 @@ mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
 ##### Adding a new, SATA cdrom Device and loading it with a windows 10 ISO image.
 
 * Note for ZFS users: While selecting Storage drives this is an excellent time to choose the disk "Device type" of "SCSI" which will use the Redhat passthrough "Virtio Scsi" disk controller for improved I/O performance, and you can create a sparse provisioned ZVOL with "zfs create -s -V 100G tank/VOLNAME" which can be addressed in this section of the Virt-Manager Manage-box as "/dev/zvol/tank/VOLNAME". The virtio guest driver for taking advantage of the "Virtio Scsi" disk controller is included by default in Linux and FreeBSD kernels. Windows will be unable to see the Virtio Scsi storage disk and unable to install until you load the Redhat Virtio Scsi Driver during the Windows install process. (Windows installers include a menu with the ability to load drivers during the install process.) The RedHat Virtio Scsi driver for windows is available as an [ISO image](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/) 
-11redoingstorage.png
+
+![11redoingstorage.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/11redoingstorage.png)
+
 ##### Adding a new, SCSI Storage Device, and addressing it to a preconfigured ZVOL
 
 * Virt-Manager configures by default to offer the Spice server with QXL video and ich6 sound in addition to two USB redirectors and a shared clipboard. These are all generally good things to have for desktop / graphical operating systems.
