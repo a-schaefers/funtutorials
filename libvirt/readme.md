@@ -166,19 +166,23 @@ Emerge -av virt-manager
 ![00virt-manager.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/00virt-manager.png)
 
 ### Creating a new Virtual Machine Template
-01createvm.png
+
+![01createvm.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/01createvm.png)
+
 Click on File > New Virtual Machine > Local install media (ISO image or CDROM) > select "Forward"
 
 ### Choose "Use ISO image:" and select "Browse"
-02nostorage.png
+
+![02nostorage.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/02nostorage.png)
 
 ### Select the "+" to "Add pool"
 ##### Note: on first use, you should create a dedicated ISO "pool" which will be a directory on your filesystem where you can store all of your ISO files. After creating the ISO pool and moving your ISO images into the directory, and then you can browse for your ISO image to use for the virtual machine install.
 
 ### Give the ISOPOOL a name and location
-03isopoolname.png
 
-04isopoollocation.png
+![03isopoolname.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/03isopoolname.png)
+
+![04isopoollocation.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/04isopoollocation.png)
 
 ### Move the ISO images to be used for VM installation to the new ISOPOOL.
 #### In my case, I have downloaded a Microsoft Windows 10 ISO install image from https://www.microsoft.com/en-us/software-download/windows10ISO
@@ -186,22 +190,28 @@ Click on File > New Virtual Machine > Local install media (ISO image or CDROM) >
 mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
 ~~~~
 #### Now upon refresh of ISOPOOL in Virt-Manager, it can be selected. Go ahead and select the ISO image and "Choose Volume", then hopefully it will automatically detect the operating system, otherwise uncheck the tick box and find the operating system you are trying to install and choose "Forward."
-05isopoolimage.png
-06isoloaded.png
+
+![05isopoolimage.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/05isopoolimage.png)
+
+![06isoloaded.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/06isoloaded.png)
 
 ### Allocate Memory and CPU to the VM
-07memcpu.png
+
+![07memcpu.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/07memcpu.png)
 
 ### Allocate Storage (or not) to the VM (This can be easily changed later)
-08allocstore.png
+
+![08allocstore.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/08allocstore.png)
 
 ### Customize Configuration Before Install
-09customizebefore.png
+
+![09customizebefore.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/09customizebefore.png)
 
 #### At this point it may be a good idea to check the box "Customize Configuration Before Install" because that will allow you to choose which bios firmware will be used, which is an important feature that can only be configured once per template. After you choose a bios template on the next screen, you will be unable to change bios' without starting the process all over again. Choosing to customize before install also has many other benefits that I will try to go over next, briefly.
 
 ### Choose Bios
-10choosebios.png
+
+![10choosebios.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/10choosebios.png)
 
 #### The default is to use seabios, which is a legacy bios. OVMF (a uefi bios) is also available. When deciding on a chipset, i440FX is for emulation of older BIOS chipsets, and Q35 is for emulation of newer BIOS chipsets. After you select these options and choose "begin installation", there is no going back without creating a new template from scratch
 
@@ -223,7 +233,8 @@ mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
 ##### Troubleshooting: Be sure to check your devices are enabled and in the proper order in the "boot device order" section of the "boot options" if you're unable to get beyond the bios menu!
 
 #### When you are ready to begin, choose "Begin Installation"
-12begininstallation.png
+
+![12begininstallation.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/12begininstallation.png)
 
 #### After successful installation of a desktop operating system, you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
 
