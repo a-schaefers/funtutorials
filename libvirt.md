@@ -138,6 +138,14 @@ virsh --connect qemu:///system destroy foo # shutdown virtual machine "foo"
 gpasswd -a $USER libvirt
 ~~~~
 
+## Configure Qemu to have the option of using UEFI bios firmware
+#### /etc/libvirt/qemu.conf
+~~~~
+nvram = [
+    "/usr/share/edk2-ovmf/OVMF_CODE.fd:/usr/share/edk2-ovmf/OVMF_VARS.fd"
+]
+~~~~
+
 ## Using Virt-Manager to create and configure VM templates
 
 #### Libvirt VM Templates are configured using XML and it is strongly recommended to install Virt-Manager in order to ease the virtual machine creation and configuration process. It may also be desirable to revisit the "virsh" commands later on, as it may be necessary to use them in order to make some advanced changes to XML templates that are not shown in the GUI Virt-Manager application.
@@ -152,9 +160,49 @@ Emerge -av virt-manager
 ##### Once again it is likely to need further USE flag changes to /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
 
 #### At this point Virtual Machine Creation and administration should be relatively intuitive using the Virt-Manager GUI tool. What follows will be screenshots and guidelines for creating a Windows 10 Virtual Machine using Virt-Manager and the additional spice guest drivers:
+ 
+## Using Virt-Manager
+00virt-manager.png
 
+### Creating a new Virtual Machine Template
+01createvm.png
+Click on File > New Virtual Machine > Local install media (ISO image or CDROM) > select "Forward"
 
+### Choose "Use ISO image:" and select "Browse"
+02nostorage.png
+
+### Select the "+" to "Add pool"
+##### Note: on first use, you should create a dedicated ISO "pool" which will be a directory on your filesystem where you can store all of your ISO files. After creating the ISO pool and moving your ISO images into the directory, and then you can browse for your ISO image to use for the virtual machine install.
+
+### Give the ISOPOOL a name and location
+03isopoolname.png
+
+04isopoollocation.png
+
+### Move the ISO images to be used for VM installation to the new ISOPOOL.
+#### In my case, I have downloaded a Microsoft Windows 10 ISO install image from https://www.microsoft.com/en-us/software-download/windows10ISO
 ~~~~
+mv ~/Downloads/Win10_1709_English_x64.iso ~/ISOPOOL
+~~~~
+#### Now upon refresh of ISOPOOL in Virt-Manager, it can be selected. Go ahead and select the ISO image and "Choose Volume", then hopefully it will automatically detect the operating system, otherwise uncheck the tick box and find the operating system you are trying to install and choose "Forward."
+05isopoolimage.png
+06isoloaded.png
+
+### Allocate Memory and CPU to the VM
+07memcpu.png
+
+### Allocate Storage (or not) to the VM (This can be easily changed later)
+08allocstore.png
+
+### Customize Configuration Before Install
+09customizebefore.png
+
+#### At this point it may be a good idea to check the box "Customize Configuration Before Install" because that will allow you to choose which bios firmware will be used, which is an important feature that can only be configured once per template. After you choose a bios template on the next screen, you will be unable to change bios' without starting the process all over again. Choosing to customize before install also has many other benefits that I will try to go over next, briefly.
+
+### Choose Bios
+10choosebios.png
+
+#### The default is to use seabios, which is a legacy bios. OVMF (a uefi bios) is also available. When deciding on a chipset, i440FX is for emulation of older BIOS chipsets, and Q35 is for emulation of newer BIOS chipsets. After you select these options and choose "begin installation", there is no going back without creating a new template from scratch
 See also:
 https://www.qemu.org
 https://www.linux-kvm.org
@@ -165,3 +213,26 @@ https://www.spice-space.org
 
 
 (Note: you still will need to install and enable the app-emulation/spice-vdagent service on every graphical guest machine. If it is a Windows guest machine, you can download a spice executeable from the official [spice downloads](https://www.spice-space.org) page.
+
+##### It is usually wise to keep things simple and use the legacy seabios unless you have a reason to need the UEFI bios (e.g. For pci-passthrough of GPU's, or working on UEFI or secure boot applications...)
+
+### Other considerations in the customization menu:
+* Q35 BIOS will not work with IDE, remove the IDE CDROM and IDE Storage and Select "Add Hardware" and add under "Storage" select SATA and add a new SATA cdrom and SATA harddrive instead. At this time it is important for most users to decide if they want to use the "qcow2" format which allows for snapshotting with rollbacks and rollforwards and is additionally sparse provisioned to only use the space it needs, or to choose "raw" which will have none of these things, but may have better performance under some circumstances.
+11newsatacdrom.png
+##### Adding a new, SATA cdrom Device and loading it with a windows 10 ISO image.
+
+* Note for ZFS users: While selecting Storage drives this is an excellent time to choose the disk "Device type" of "SCSI" which will use the Redhat passthrough "Virtio Scsi" disk controller for improved I/O performance, and you can create a sparse provisioned ZVOL with "zfs create -s -V 100G tank/VOLNAME" which can be addressed in this section of the Virt-Manager Manage-box as "/dev/zvol/tank/VOLNAME". The virtio guest driver for taking advantage of the "Virtio Scsi" disk controller is included by default in Linux and FreeBSD kernels. Windows will be unable to see the Virtio Scsi storage disk and unable to install until you load the Redhat Virtio Scsi Driver during the Windows install process. (Windows installers include a menu with the ability to load drivers during the install process.) The RedHat Virtio Scsi driver for windows is available as an [ISO image](https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/) 
+11redoingstorage.png
+##### Adding a new, SCSI Storage Device, and addressing it to a preconfigured ZVOL
+
+* Virt-Manager configures by default to offer the Spice server with QXL video and ich6 sound in addition to two USB redirectors and a shared clipboard. These are all generally good things to have for desktop / graphical operating systems.
+
+* You can return to the customization menu at any time from the main Virt-Manager by selecting the virtual machine in question and choosing "open" and then selecting from the dropdown menu via "View > Details** to reconfigure the VM's general options.
+
+##### Troubleshooting: Be sure to check your devices are enabled and in the proper order in the "boot device order" section of the "boot options" if you're unable to get beyond the bios menu!
+
+#### When you are ready to begin, choose "Begin Installation"
+12begininstallation.png
+
+#### After successful installation of a desktop operating system, it is important to be sure you enable the Spice guest agent, which can be installed from most Linux distro's package repos and enabled using one of the various init systems, but as mentioned previously, this is also done automatically by many Linux distros.
+
