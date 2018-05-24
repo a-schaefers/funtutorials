@@ -162,7 +162,8 @@ Emerge -av virt-manager
 #### At this point Virtual Machine Creation and administration should be relatively intuitive using the Virt-Manager GUI tool. What follows will be screenshots and guidelines for creating a Windows 10 Virtual Machine using Virt-Manager and the additional spice guest drivers:
  
 ## Using Virt-Manager
-00virt-manager.png
+
+![00virt-manager.png](https://github.com/a-schaefers/funtutorials/blob/master/libvirt/00virt-manager.png)
 
 ### Creating a new Virtual Machine Template
 01createvm.png
