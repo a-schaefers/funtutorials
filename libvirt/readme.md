@@ -155,7 +155,7 @@ nvram = [
 echo 'app-emulation/virt-manager gtk policykit' >> /etc/portage/package.use
 ~~~~
 ~~~~
-Emerge -av virt-manager
+emerge -av virt-manager
 ~~~~
 ##### Once again it is likely to need further USE flag changes to /etc/portage/package.use -- if the changes look good, go ahead and add the changes it needs in order to be emerged.
 
