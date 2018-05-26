@@ -1,5 +1,4 @@
 
-
 {{Article
 |Author=a-schaefers
 }}
@@ -19,31 +18,31 @@ An overview according to libvirt.org, the [libvirt] project:
 
 ==Check for KVM hardware support==
 Verify the processor supports Intel Vt-x or AMD-V technology and that the necessary virtualization features are enabled within the BIOS. The following command should reveal if your hardware supports virtualization:
-<pre>
-$ LC_ALL=C lscpu | grep Virt
-</pre>
+{{console|body=
+$ ##i##LC_ALL=C lscpu {{!}} grep Virt
+}}
 
 ==Kernel configuration==
-The default Funtoo kernel, "debian-sources", has the needed KVM virtualization and virtual networking features enabled by default and will not require any reconfiguration. Non debian-sources users will need to verify the necessary kernel features are turned on in order to run KVM virtual machines and use virtual networking.
+The default Funtoo kernel, sys-kernel/debian-sources, has the needed KVM virtualization and virtual networking features enabled by default and will not require any reconfiguration. Non debian-sources users will need to verify the necessary kernel features are turned on in order to run KVM virtual machines and use virtual networking.
 
 ==Install libvirt==
 Optionally build libvirt with policykit support which will allow non-root users to authenticate as root in order to manage VMs and will also allow members of the libvirt group to manage VMs without using the root password.
 
-<pre>
-$ echo 'app-emulation/libvirt policykit' >> /etc/portage/package.use
-</pre>
+{{console|body=
+$ ##i##echo 'app-emulation/libvirt policykit' >> /etc/portage/package.use
+}}
 
 For desktop VM usage it is recommended to build app-emulation/qemu with spice support. The Spice protocols can be used to gain improved graphical and audio experience, clipboard-sharing and directory-sharing.
 
-<pre>
-$ echo 'app-emulation/qemu spice' >> /etc/portage/package.use
-</pre>
+{{console|body=
+$ ##i##echo 'app-emulation/qemu spice' >> /etc/portage/package.use
+}}
 
-It's likely to need further USE flag changes in /etc/portage/package.use -- if it asks, add the changes needed in order to be emerged. 
+It's likely to need further USE flag changes in /etc/portage/package.use -- if it asks, add the changes needed in order to be emerged.
 
-<pre>
-$ emerge -av app-emulation/libvirt
-</pre>
+{{console|body=
+$ ##i##emerge -av app-emulation/libvirt
+}}
 
 After libvirt is finished compiling, you will have installed libvirt and pulled-in all of its necessary dependencies, such as app-emulation/qemu and also net-firewall/ebtables and net-dns/dnsmasq for the default NAT/DHCP networking.
 
@@ -51,29 +50,41 @@ After libvirt is finished compiling, you will have installed libvirt and pulled-
 
 Start the libvirtd service.
 
-<pre>$ rc-service libvirtd start</pre>
+{{console|body=
+$ ##i## rc-service libvirtd start
+}}
 
 Add the libvirtd service to the openrc default runlevel.
 
-<pre>$ rc-update add libvirtd</pre>
+{{console|body=
+$ ##i## rc-update add libvirtd
+}}
 
 ==Enable the "default" libvirt NAT==
 
 Set the virsh network "default" to be autostarted by libvirtd.
 
-<pre>$ virsh net-autostart default</pre>
+{{console|body=
+$ ##i## virsh net-autostart default
+}}
 
 Start the "default" virsh network.
 
-<pre>$ virsh net-start default</pre>
+{{console|body=
+$ ##i## virsh net-start default
+}}
 
 Restart the libvirtd service to ensure everything has taken effect.
 
-<pre>$ rc-service libvirtd restart</pre>
+{{console|body=
+$ ##i## rc-service libvirtd restart
+}}
 
 Use ifconfig to verify the default NAT's network interface is up.
 
-<pre>$ ifconfig</pre>
+{{console|body=
+$ ##i## ifconfig
+}}
     ...
     virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
     inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255
@@ -86,7 +97,9 @@ Use ifconfig to verify the default NAT's network interface is up.
 
 Notice the "default" libvirt NAT inserts its additional iptables rules automatically upon every libvirtd restart.
 
-<pre>$ iptables -S</pre>
+{{console|body=
+$ ##i## iptables -S
+}}
     ...
     -A FORWARD -d 192.168.122.0/24 -o virbr0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     -A FORWARD -s 192.168.122.0/24 -i virbr0 -j ACCEPT
@@ -116,21 +129,37 @@ As noted from man(1) virsh,
 
 Running as root, the following are some example virsh commands:
 
-<pre>$ virsh list --all
-$ virsh start foo
-$ virsh destroy foo </pre>
+{{console|body=
+$ ##i## virsh list --all
+}}
+
+{{console|body=
+$ ##i## virsh start foo
+}}
+
+{{console|body=
+$ ##i## virsh destroy foo
+}}
 
 If libvirt was built with polictykit support, non-root users can run the same example virsh commands by addressing qemu:///system and authenticating as root via policykit.
 
-<pre>$ virsh --connect qemu:///system list --all
-$ virsh --connect qemu:///system start foo
-$ virsh --connect qemu:///system destroy foo</pre>
+{{console|body=
+$ ##i## virsh --connect qemu:///system list --all
+}}
+
+{{console|body=
+$ ##i## virsh --connect qemu:///system start foo
+}}
+
+{{console|body=
+$ ##i## virsh --connect qemu:///system destroy foo
+}}
 
 ==Passwordless, non-root VM administration==
 
 If libvirt was built with policykit support, add a user to the additional "libvirt" group in order to administrate Virtual Machines without authenticating as root. Log out and back in for these changes to take affect.
 
-<pre>$ gpasswd -a $USER libvirt</pre>
+{{console|body=$ ##i## gpasswd -a $USER libvirt}}
 
 ==Tell Qemu where the UEFI BIOS firmware is located==
 
@@ -148,15 +177,15 @@ Libvirt VM Templates are configured using XML and it is recommended to install V
 
 Make sure the gtk USE flag is enabled for Virt-Mananger, as it is a graphical application, and also polictykit, and then begin the emerge process:
 
-<pre>
-$ echo 'app-emulation/virt-manager gtk policykit' >> /etc/portage/package.use
-</pre>
+{{console|body=
+$ ##i## echo 'app-emulation/virt-manager gtk policykit' >> /etc/portage/package.use
+}}
 
 It's likely to need further USE flag changes in /etc/portage/package.use -- if it asks, add the changes needed in order to be emerged.
 
-<pre>
-$ emerge -av app-emulation/virt-manager
-</pre>
+{{console|body=
+$ ##i## emerge -av app-emulation/virt-manager
+}}
 
 == Create a new Virtual Machine Template ==
 
@@ -191,11 +220,11 @@ It is also important to decide between using the qcow2 or raw storage types. Qco
 While adding virtual storage hardware, it is an excellent time to choose the disk "Device type" of "SCSI" which will use the Redhat passthrough "Virtio SCSI" disk controller for improved I/O performance.
 
 ZFS users can also use a sparse provisioned ZVOL which can be addressed in the "Select or create custom storage" textbox as follows:
-<pre>
+{{console|body=
 /dev/zvol/tank/VOLNAME
-</pre>
+}}
 
-The virtio guest driver for taking advantage of the "Virtio SCSI" disk controller is included by default in Linux and FreeBSD kernels. Windows will be unable to see the Virtio SCSI storage disk and therefore unable to install until you load the Redhat Virtio SCSI Driver during the Windows install process. (Windows installers include a menu with the ability to load drivers during the install process.) The RedHat Virtio SCSI driver for Windows is available to [https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.149-2 download as an ISO image].
+The virtio guest driver for taking advantage of the "Virtio SCSI" disk controller is included by default in Linux and FreeBSD kernels. Windows will be unable to see the Virtio SCSI storage disk and therefore unable to install until you load the Redhat Virtio SCSI driver during the Windows install process. (Windows installers include a menu that is able to load drivers during installation.) The RedHat Virtio SCSI driver for Windows is available to [https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.149-2 download as an ISO image].
 
 [[File:11redoingstorage.png|525px|Adding a new SCSI Storage Device and addressing it to a preconfigured ZVOL]]
 
@@ -221,11 +250,11 @@ Some features can only be changed by editing the XML template directly. This exa
 Can't get beyond the BIOS screen? Check if the boot devices are enabled and in the correct order. Also check if the CDROM has an ISO loaded! It may also be possible the ISO installation media only supports legacy BIOS.
 
 ==Links ==
-* https://www.qemu.org
 * https://www.linux-kvm.org
+* https://www.qemu.org
 * https://libvirt.org
-* https://virt-manager.org
 * https://www.spice-space.org
+* https://virt-manager.org
 * https://libvirt.org/docs.html
 * https://wiki.archlinux.org/index.php/Libvirt
 * https://wiki.archlinux.org/index.php/PCI_passthrough_via_OVMF
